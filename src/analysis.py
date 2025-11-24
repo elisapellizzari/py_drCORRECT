@@ -35,7 +35,7 @@ def compare_corrective_strategies(rbg, data, subject_info, t_pers, save_name, tr
                                  enable_correction_boluses=True,
                                  correction_boluses_handler=standard_cib,
                                  correction_boluses_handler_params={'gt': subject_info['gt'], 'cf': subject_info['cf']},
-                                 save_suffix='replay_standard_therapy',
+                                 save_suffix='_replay_standard_therapy',
                                  n_replay=1,
                                  twinning_method='map',
                                  save_workspace=True
@@ -52,7 +52,7 @@ def compare_corrective_strategies(rbg, data, subject_info, t_pers, save_name, tr
                                 enable_correction_boluses=True,
                                 correction_boluses_handler=aleppo,
                                 correction_boluses_handler_params={'gt': subject_info['gt'], 'cf': subject_info['cf']},
-                                save_suffix='aleppo_replay',
+                                save_suffix='_aleppo_replay',
                                 n_replay=1,
                                 twinning_method='map',
                                 save_workspace=True
@@ -69,7 +69,7 @@ def compare_corrective_strategies(rbg, data, subject_info, t_pers, save_name, tr
                                 enable_correction_boluses=True,
                                 correction_boluses_handler=drCORRECT,
                                 correction_boluses_handler_params={'gt': subject_info['gt'], 'cf': subject_info['cf'], 't_pers': t_pers},
-                                save_suffix='drcorrect_replay',
+                                save_suffix='_drcorrect_replay',
                                 n_replay=1,
                                 twinning_method='map',
                                 save_workspace=True
