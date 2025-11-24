@@ -12,6 +12,18 @@ from py_agata.time_in_ranges import time_in_hyperglycemia
 
 
 def compare_corrective_strategies(rbg: object, data: pd.DataFrame, subject_info: dict, t_pers: float, twinning_method: str, save_name: str, trace_name: str) -> dict:
+    """
+    Compare different corrective insulin bolus strategies using ReplayBG simulations.
+    Args:
+        rbg: ReplayBG object, instantiated digital twin tool
+        data: pd.DataFrame, original data
+        subject_info: dict, subject information
+        t_pers: float, personalized parameter for drCORRECT
+        twinning_method: str, method used for twinning ('map' or 'mcmc')
+        save_name: str, name of the twin
+        trace_name: str, name of the trace
+    Returns:
+        results: dict, containing replay results for each corrective strategy"""
     
     data_no_cib = data.copy()
     B_idx = np.where(data_no_cib['bolus_label'] == 'B')[0]
