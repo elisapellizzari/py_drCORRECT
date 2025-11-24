@@ -86,15 +86,14 @@ def plot_twinned_data(rbg, twinning_method, original_data, subject_info, save_na
     
 
 def plot_comparison(results, output_folder, trace_name):
-    fig, axs = plt.subplots(5, 1, figsize=(14, 10), sharex=True,
-                gridspec_kw={'height_ratios': [4, 1, 1, 1, 1]})
+    fig, axs = plt.subplots(4, 1, figsize=(14, 10), sharex=True,
+                gridspec_kw={'height_ratios': [5, 1, 1, 1]})
 
     tt = pd.date_range(start=results['Original data']['rbg_data'].t_data.min(), end=results['Original data']['rbg_data'].t_data.max()+pd.Timedelta("4min"),freq="1min")
     
     ##### CGM #####
     axs[0].plot(tt, results['Original data']['glucose']['median'], label='Original data', color='black', linestyle='-', marker='o', markersize=1)
-    axs[0].plot(tt, results['Standard therapy']['glucose']['median'], label='Standard therapy', color='red', linestyle='-', marker='o', markersize=1)
-    axs[0].plot(tt, results['Aleppo guidelines']['glucose']['median'], label='Aleppo guidelines', color='orange', linestyle='-', marker='o', markersize=1)
+    axs[0].plot(tt, results['Aleppo guidelines']['glucose']['median'], label='Aleppo guidelines', color='red', linestyle='-', marker='o', markersize=1)
     axs[0].plot(tt, results['drCORRECT algorithm']['glucose']['median'], label='drCORRECT algorithm', color='green', linestyle='-', marker='o', markersize=1)
     axs[0].axhline(y=180, color='gold', alpha=0.5, linestyle='--')
     axs[0].axhline(y=70, color='darkred', alpha=0.5, linestyle='--')
@@ -127,12 +126,12 @@ def plot_comparison(results, output_folder, trace_name):
     ax1.legend(['Original basal insulin'], loc='upper right')
     ax1.set_ylim([0, 0.1])
     
-    # Standard therapy
-    axs[2].bar(tt, results['Standard therapy']['insulin_bolus']['realizations'][0, :], color='black', label='Bolus from data', width=0.008)
-    axs[2].bar(tt, results['Standard therapy']['correction_bolus']['realizations'][0, :], color='red', label='CIB', width=0.008)
+    # Aleppo guidelines
+    axs[2].bar(tt, results['Aleppo guidelines']['insulin_bolus']['realizations'][0, :], color='black', label='Bolus from data', width=0.008)
+    axs[2].bar(tt, results['Aleppo guidelines']['correction_bolus']['realizations'][0, :], color='red', label='CIB', width=0.008)
     axs[2].set_ylabel('Bolus [U]')
+    axs[2].set_title('Aleppo guidelines insulin')
     axs[2].legend(loc='upper left')
-    axs[2].set_title('Standard therapy insulin')
     axs[2].grid(True)
     axs[2].set_ylim(0, 5)
     
@@ -143,11 +142,10 @@ def plot_comparison(results, output_folder, trace_name):
     ax2.legend(['Original basal insulin'], loc='upper right')
     ax2.set_ylim([0, 0.1])
     
-    # Aleppo guidelines
-    axs[3].bar(tt, results['Aleppo guidelines']['insulin_bolus']['realizations'][0, :], color='black', label='Bolus from data', width=0.008)
-    axs[3].bar(tt, results['Aleppo guidelines']['correction_bolus']['realizations'][0, :], color='orange', label='CIB', width=0.008)
+    # drCORRECT algorithm
+    axs[3].bar(tt, results['drCORRECT algorithm']['insulin_bolus']['realizations'][0, :], color='black', label='Bolus from data', width=0.008)
+    axs[3].bar(tt, results['drCORRECT algorithm']['correction_bolus']['realizations'][0, :], color='green', label='CIB', width=0.008)
     axs[3].set_ylabel('Bolus [U]')
-    axs[3].set_title('Aleppo guidelines insulin')
     axs[3].legend(loc='upper left')
     axs[3].grid(True)
     axs[3].set_ylim(0, 5)
@@ -155,25 +153,10 @@ def plot_comparison(results, output_folder, trace_name):
     ax3 = axs[3].twinx()
     ax3.plot(tt, results['Original data']['insulin_basal']['realizations'][0, :], color='black', linestyle='--', linewidth=0.8)
     ax3.set_ylabel('Basal [U]')
+    axs[3].set_title('drCORRECT algorithm insulin')
     ax3.tick_params(axis='y')
     ax3.legend(['Original basal insulin'], loc='upper right')
     ax3.set_ylim([0, 0.1])
-    
-    # drCORRECT algorithm
-    axs[4].bar(tt, results['drCORRECT algorithm']['insulin_bolus']['realizations'][0, :], color='black', label='Bolus from data', width=0.008)
-    axs[4].bar(tt, results['drCORRECT algorithm']['correction_bolus']['realizations'][0, :], color='green', label='CIB', width=0.008)
-    axs[4].set_ylabel('Bolus [U]')
-    axs[4].legend(loc='upper left')
-    axs[4].grid(True)
-    axs[4].set_ylim(0, 5)
-    
-    ax4 = axs[4].twinx()
-    ax4.plot(tt, results['Original data']['insulin_basal']['realizations'][0, :], color='black', linestyle='--', linewidth=0.8)
-    ax4.set_ylabel('Basal [U]')
-    axs[4].set_title('drCORRECT algorithm insulin')
-    ax4.tick_params(axis='y')
-    ax4.legend(['Original basal insulin'], loc='upper right')
-    ax4.set_ylim([0, 0.1])
     
     # Final plot adjustments and saving
     plt.xlabel('Time')

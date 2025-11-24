@@ -111,7 +111,7 @@ def replaybg_backward_euler_matlab_implementation(xkm1, INS, mP):
 
 
 def save_comparison(results, save_folder, trace_name):
-    df = pd.DataFrame(columns=['Original data', 'Standard therapy', 'Aleppo guidelines', 'drCORRECT algorithm'], 
+    df = pd.DataFrame(columns=['Original data', 'Aleppo guidelines', 'drCORRECT algorithm'], 
                       index=['TIR (%)', 'TAR (%)', 'TBR (%)', 'GRI (-)', 'Mean Glucose (mg/dl)', 'CV of Glucose (%)', 'STD of Glucose (mg/dl)', 'STD of Glucose ROC (mg/dl/min)'])
     
     for key, result in results.items():

@@ -30,23 +30,6 @@ def compare_corrective_strategies(rbg, data, subject_info, t_pers, save_name, tr
     print('Mean glucose: %.2f mg/dl' % median_glucose(df_res))
     print('TAR: %.2f %% \n' % time_in_hyperglycemia(df_res))
     
-    print("Replaying Tidepool " + trace_name + " data using the standard therapy.")
-    standard_replay = rbg.replay(data=data_no_cib, bw=subject_info['bw'], save_name=save_name,
-                                 enable_correction_boluses=True,
-                                 correction_boluses_handler=standard_cib,
-                                 correction_boluses_handler_params={'gt': subject_info['gt'], 'cf': subject_info['cf']},
-                                 save_suffix='_replay_standard_therapy',
-                                 n_replay=1,
-                                 twinning_method='map',
-                                 save_workspace=True
-    )
-    df_res = pd.DataFrame(pd.DataFrame({
-                            't': tt,
-                            'glucose': standard_replay['glucose']['median']
-                        }))
-    print('Mean glucose: %.2f mg/dl' % median_glucose(df_res))
-    print('TAR: %.2f %% \n' % time_in_hyperglycemia(df_res))
-    
     print("Replaying Tidepool " + trace_name + " data using Aleppo's guidelines.")
     aleppo_replay = rbg.replay(data=data_no_cib, bw=subject_info['bw'], save_name=save_name,
                                 enable_correction_boluses=True,
@@ -83,6 +66,5 @@ def compare_corrective_strategies(rbg, data, subject_info, t_pers, save_name, tr
     
     return {
         'Original data': original_replay,
-        'Standard therapy': standard_replay,
         'Aleppo guidelines': aleppo_replay,
         'drCORRECT algorithm': drcorrect_replay}
