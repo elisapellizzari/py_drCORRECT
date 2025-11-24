@@ -92,7 +92,7 @@ def plot_comparison(results, output_folder, trace_name):
     tt = pd.date_range(start=results['Original data']['rbg_data'].t_data.min(), end=results['Original data']['rbg_data'].t_data.max()+pd.Timedelta("4min"),freq="1min")
     
     ##### CGM #####
-    axs[0].plot(tt, results['Original data']['glucose']['median'], label='Original data', color='black', linestyle='-', marker='o', markersize=1)
+    axs[0].plot(tt, results['Original data']['glucose']['median'], label='Baseline', color='black', linestyle='--', markersize=1)
     axs[0].plot(tt, results['Aleppo guidelines']['glucose']['median'], label='Aleppo guidelines', color='red', linestyle='-', marker='o', markersize=1)
     axs[0].plot(tt, results['drCORRECT algorithm']['glucose']['median'], label='drCORRECT algorithm', color='green', linestyle='-', marker='o', markersize=1)
     axs[0].axhline(y=180, color='gold', alpha=0.5, linestyle='--')
