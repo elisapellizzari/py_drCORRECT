@@ -71,7 +71,7 @@ def plot_twinned_data(rbg, twinning_method, original_data, subject_info, save_na
                                 n_replay=1,
                                 twinning_method=twinning_method,
                                 save_workspace=True,
-                                save_suffix='replay_twin')
+                                save_suffix='_replay_twin')
     
     twinned_glucose = replay_results['glucose']['median']
 
