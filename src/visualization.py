@@ -72,7 +72,7 @@ def plot_twinned_data(rbg: object, twinning_method: str, original_data: pd.DataF
                                 n_replay=1,
                                 twinning_method=twinning_method,
                                 save_workspace=True,
-                                save_suffix='_replay_twin')
+                                save_suffix=f'_replay_twin_{twinning_method}')
     
     twinned_glucose = replay_results['glucose']['median']
 
@@ -82,11 +82,11 @@ def plot_twinned_data(rbg: object, twinning_method: str, original_data: pd.DataF
     axs[0].legend()
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_folder, f"twinned_data_plot_{trace_name}.png"))
+    plt.savefig(os.path.join(output_folder, f"twinned_data_plot_{trace_name}_{twinning_method}.png"))
     plt.close('all')
     
 
-def plot_comparison(results: dict, output_folder: str, trace_name: str) -> None:
+def plot_comparison(results: dict, output_folder: str, trace_name: str, twinning_method: str='map') -> None:
     
     fig, axs = plt.subplots(4, 1, figsize=(14, 10), sharex=True,
                 gridspec_kw={'height_ratios': [5, 1, 1, 1]})
@@ -164,5 +164,5 @@ def plot_comparison(results: dict, output_folder: str, trace_name: str) -> None:
     plt.xlabel('Time')
     plt.tight_layout()
 
-    save_name = f"cib_comparison_plot_{trace_name}"
+    save_name = f"cib_comparison_plot_{trace_name}_{twinning_method}"
     plt.savefig(os.path.join(output_folder, f"{save_name}.png"))

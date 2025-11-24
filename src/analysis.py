@@ -11,7 +11,7 @@ from py_agata.variability import median_glucose
 from py_agata.time_in_ranges import time_in_hyperglycemia
 
 
-def compare_corrective_strategies(rbg: object, data: pd.DataFrame, subject_info: dict, t_pers: float, save_name: str, trace_name: str) -> dict:
+def compare_corrective_strategies(rbg: object, data: pd.DataFrame, subject_info: dict, t_pers: float, twinning_method: str, save_name: str, trace_name: str) -> dict:
     
     data_no_cib = data.copy()
     B_idx = np.where(data_no_cib['bolus_label'] == 'B')[0]
@@ -22,7 +22,7 @@ def compare_corrective_strategies(rbg: object, data: pd.DataFrame, subject_info:
     print("Replaying Tidepool " + trace_name + " data with original CIB.")
     original_replay = rbg.replay(data=data_no_cib, bw=subject_info['bw'], save_name=save_name,
                                  n_replay=1,
-                                 twinning_method='map',
+                                 twinning_method=twinning_method,
                                  save_workspace=False
     )
     tt = pd.date_range(start=original_replay['rbg_data'].t_data.min(), end=original_replay['rbg_data'].t_data.max()+pd.Timedelta("4min"),freq="1min")
@@ -38,9 +38,9 @@ def compare_corrective_strategies(rbg: object, data: pd.DataFrame, subject_info:
                                 enable_correction_boluses=True,
                                 correction_boluses_handler=aleppo,
                                 correction_boluses_handler_params={'gt': subject_info['gt'], 'cf': subject_info['cf']},
-                                save_suffix='_aleppo_replay',
+                                save_suffix=f'_aleppo_replay_{twinning_method}',
                                 n_replay=1,
-                                twinning_method='map',
+                                twinning_method=twinning_method,
                                 save_workspace=True
     )
     df_res = pd.DataFrame(pd.DataFrame({
@@ -55,9 +55,9 @@ def compare_corrective_strategies(rbg: object, data: pd.DataFrame, subject_info:
                                 enable_correction_boluses=True,
                                 correction_boluses_handler=drCORRECT,
                                 correction_boluses_handler_params={'gt': subject_info['gt'], 'cf': subject_info['cf'], 't_pers': t_pers},
-                                save_suffix='_drcorrect_replay',
+                                save_suffix=f'_drcorrect_replay_{twinning_method}',
                                 n_replay=1,
-                                twinning_method='map',
+                                twinning_method=twinning_method,
                                 save_workspace=True
     )
     df_res = pd.DataFrame(pd.DataFrame({

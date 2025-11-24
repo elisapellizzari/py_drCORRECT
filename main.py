@@ -44,7 +44,7 @@ def main(twin: bool = False, twinning_method: str = 'map', do_plot: bool = False
     t_pers = retrieve_t_pers(save_name, subject_info, save_folder, twinning_method)
     
     # 5. Compare corrective strategies
-    results = compare_corrective_strategies(rbg, original_data, subject_info, t_pers, save_name, trace_name)
+    results = compare_corrective_strategies(rbg, original_data, subject_info, t_pers, twinning_method, save_name, trace_name)
     save_comparison(results, os.path.join(save_folder, "results", "comparison_results"), trace_name)
     
     if do_plot:
