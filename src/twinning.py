@@ -1,9 +1,22 @@
 """
+Utility for performing a single-day digital twinning run.
 """
 
 import time
 
-def twin_day(rbg, twinning_method, data, subject_info, save_name, trace_name):
+def twin_day(rbg: object, twinning_method: str, data: object, subject_info: dict, save_name: str, trace_name: str) -> None:
+    """
+    Perform single-day digital twinning using ReplayBG.
+    Args:
+        rbg: ReplayBG object, instantiated ReplayBG digital twin tool
+        twinning_method: str, method for twinning ('map' or 'mcmc')
+        data: pd.DataFrame, original data
+        subject_info: dict, subject information including bw and u2ss
+        save_name: str, name to save the twin
+        trace_name: str, name of the trace for logging
+    Returns:
+        None
+    """
     print("Twinning Tidepool " + trace_name + " data using " + twinning_method + " method.")
     
     # Run twinning procedure

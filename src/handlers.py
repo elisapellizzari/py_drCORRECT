@@ -1,4 +1,5 @@
 """
+Handlers for correction bolus strategies used during replay simulations.
 """
 
 import numpy as np
@@ -17,7 +18,7 @@ def standard_cib(
         dss: object
         ) -> tuple[float, object]:
     """
-    Implements the standard therapy correction bolus strategy: "take a correction bolus acoording to the standard formula 
+    Implements the standard therapy correction bolus strategy: "take a correction bolus according to the standard formula 
     when in hyperglycemia and anyway after at least two hours from last bolus ".
 
     Parameters
@@ -429,7 +430,10 @@ def drCORRECT(
     return cb, dss
 
 
-def get_last_mealtime(meal_announcement, meal_type, time_index):
+def get_last_mealtime(meal_announcement: np.ndarray, meal_type: np.ndarray, time_index: int) -> int:
+    """
+    Get the index of the last mealtime labeled as B, L or D before time_index.
+    """
     
     meals = np.where(meal_announcement[:time_index] > 0)[0]
     if len(meals) == 0:
@@ -447,6 +451,9 @@ def get_last_mealtime(meal_announcement, meal_type, time_index):
 
 
 def compute_iob(bolus: np.ndarray) -> np.ndarray:
+    """
+    Compute insulin on board (IOB) from bolus array using a 6-hour action profile.
+    """
     
     ts = 5
 
@@ -467,7 +474,10 @@ def compute_iob(bolus: np.ndarray) -> np.ndarray:
     return iob
 
 
-def get_arrow(current_trend):
+def get_arrow(current_trend: float) -> int:
+    """
+    Scale the current trend (mg/dl/min) into an arrow value according to guidelines.
+    """
     
     if abs(current_trend) <= 1:
         scaled_trend = 0

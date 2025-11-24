@@ -1,4 +1,5 @@
 """
+Utility functions.
 """
 
 import os
@@ -11,14 +12,29 @@ from py_agata.time_in_ranges import time_in_target, time_in_hyperglycemia, time_
 from py_agata.risk import gri
 from py_agata.variability import mean_glucose, cv_glucose, std_glucose, std_glucose_roc
 
-def load_example_data(name):
+
+def load_example_data(name: str) -> pd.DataFrame:
+    """
+    Load CGM data from CSV file.
+    Args:
+        name: str, name of the trace (used to find the correct file)
+    Returns:
+        df: pd.DataFrame, loaded data with 't' as datetime index
+    """
     data_path = os.path.join("data", f"Tidepool_{name}.csv")
     df = pd.read_csv(data_path)
     df['t'] = pd.to_datetime(df['t'])
     return df
 
 
-def load_subject_info(name):
+def load_subject_info(name: str) -> dict:
+    """
+    Retrieve subject information from CSV file.
+    Args:
+        name: str, name of the trace (used to find the correct file)
+    Returns:
+        dict: subject information including cf, gt, cr, bw, and u2ss
+    """
     data_path = os.path.join("data", f"Tidepool_{name}.csv")
     df = pd.read_csv(data_path)
     
@@ -33,7 +49,17 @@ def load_subject_info(name):
     return {'cf': cf, 'gt': gt, 'cr': cr, 'bw': bw, 'u2ss': u2ss}
 
 
-def retrieve_t_pers(save_name, subject_info, save_folder, twinning_method='map'):
+def retrieve_t_pers(save_name: str, subject_info: dict, save_folder: str, twinning_method: str = 'map') -> float:
+    """
+    Retrieve personalized parameter t_pers for drCORRECT algorithm from saved digital twin.
+    Args:
+        save_name: str, name of the twin
+        subject_info: dict, subject information
+        save_folder: str, folder where results are saved
+        twinning_method: str, method used for twinning ('map' or 'mcmc')
+    Returns:
+        t_pers: float, personalized parameter
+    """
     if twinning_method == "map":
         data = pd.read_pickle(os.path.join(save_folder, "results", twinning_method, f"{twinning_method}_{save_name}.pkl"))
         model_parameters = data["draws"].copy()
@@ -84,7 +110,7 @@ def retrieve_t_pers(save_name, subject_info, save_folder, twinning_method='map')
     return tmax*1.5 if tmax*1.5 > 60 else 60
 
 
-def replaybg_backward_euler_matlab_implementation(xkm1, INS, mP):
+def replaybg_backward_euler_matlab_implementation(xkm1: np.ndarray, INS: float, mP: dict) -> np.ndarray:
     """
     ReplayBG backward euler integration step from matlab version.
     Args:
@@ -110,7 +136,16 @@ def replaybg_backward_euler_matlab_implementation(xkm1, INS, mP):
     return xk
 
 
-def save_comparison(results, save_folder, trace_name):
+def save_comparison(results: dict, save_folder: str, trace_name: str) -> pd.DataFrame:
+    """
+    Save comparison results to CSV file.
+    Args:
+        results: dict, replay results from different strategies
+        save_folder: str, folder to save the results
+        trace_name: str, name of the trace
+    Returns:
+        df: pd.DataFrame, comparison results
+    """
     df = pd.DataFrame(columns=['Original data', 'Aleppo guidelines', 'drCORRECT algorithm'], 
                       index=['TIR (%)', 'TAR (%)', 'TBR (%)', 'GRI (-)', 'Mean Glucose (mg/dl)', 'CV of Glucose (%)', 'STD of Glucose (mg/dl)', 'STD of Glucose ROC (mg/dl/min)'])
     

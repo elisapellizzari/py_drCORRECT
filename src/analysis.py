@@ -1,5 +1,7 @@
 """
+Analysis utilities to compare corrective insulin bolus strategies using replay simulations.
 """
+
 from src.handlers import drCORRECT, standard_cib, aleppo
 
 import pandas as pd
@@ -8,7 +10,8 @@ import numpy as np
 from py_agata.variability import median_glucose
 from py_agata.time_in_ranges import time_in_hyperglycemia
 
-def compare_corrective_strategies(rbg, data, subject_info, t_pers, save_name, trace_name):
+
+def compare_corrective_strategies(rbg: object, data: pd.DataFrame, subject_info: dict, t_pers: float, save_name: str, trace_name: str) -> dict:
     
     data_no_cib = data.copy()
     B_idx = np.where(data_no_cib['bolus_label'] == 'B')[0]

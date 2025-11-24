@@ -1,3 +1,7 @@
+"""
+Main script for running digital twin generation with and comparing corrective strategies on example CGM data. 
+"""
+
 import os
 
 from py_replay_bg.py_replay_bg import ReplayBG

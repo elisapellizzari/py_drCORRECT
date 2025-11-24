@@ -1,11 +1,12 @@
 """
+Visualization utilities for original, twinned, and comparative glucose-insulin data.
 """
 
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
 
-def plot_original_data(data, output_folder, trace_name):
+def plot_original_data(data: pd.DataFrame, output_folder: str, trace_name: str) -> tuple[plt.Figure, plt.Axes]:
     fig, axs = plt.subplots(3, 1, figsize=(12, 8), sharex=True,
                 gridspec_kw={'height_ratios': [3, 1, 1]})
 
@@ -62,7 +63,7 @@ def plot_original_data(data, output_folder, trace_name):
     return fig, axs
 
 
-def plot_twinned_data(rbg, twinning_method, original_data, subject_info, save_name, output_folder, trace_name):
+def plot_twinned_data(rbg: object, twinning_method: str, original_data: pd.DataFrame, subject_info: dict, save_name: str, output_folder: str, trace_name: str) -> None:
 
     fig, axs = plot_original_data(original_data, output_folder, trace_name)
 
@@ -85,7 +86,8 @@ def plot_twinned_data(rbg, twinning_method, original_data, subject_info, save_na
     plt.close('all')
     
 
-def plot_comparison(results, output_folder, trace_name):
+def plot_comparison(results: dict, output_folder: str, trace_name: str) -> None:
+    
     fig, axs = plt.subplots(4, 1, figsize=(14, 10), sharex=True,
                 gridspec_kw={'height_ratios': [5, 1, 1, 1]})
 
