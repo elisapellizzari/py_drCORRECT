@@ -1,1 +1,4 @@
 /venv
+data/tidepool_sap_strict/*
+*.pyc
+*.DS_Store
