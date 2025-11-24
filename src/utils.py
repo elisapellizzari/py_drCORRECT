@@ -38,9 +38,9 @@ def load_subject_info(name: str) -> dict:
     data_path = os.path.join("data", f"Tidepool_{name}.csv")
     df = pd.read_csv(data_path)
     
-    cf = df.bolus_cf.dropna().mean() if not None else 40
-    gt = df.bolus_bg_target.dropna().mean() if not None else 120
-    cr = df.bolus_cr.dropna().mean() if not None else 12
+    cf = df.bolus_cf.dropna().mean() if not np.nan else 40
+    gt = df.bolus_bg_target.dropna().mean() if not np.nan else 120
+    cr = df.bolus_cr.dropna().mean() if not np.nan else 12
     
     bw = 70  # kg, assumed value
     
