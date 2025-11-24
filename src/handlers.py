@@ -92,7 +92,7 @@ def standard_cib(
         # ...and if there are no boluses in the last 120 minutes, then take a CB
         if time_index >= 120 and not np.any(bolus[(time_index - 120):time_index]):
             # compute iob            
-            iob = compute_iob(bolus)
+            iob = compute_iob(bolus[:time_index])
 
             # get params
             cf = dss.bolus_calculator_handler_params['cf'] if 'cf' in dss.bolus_calculator_handler_params else 40
@@ -206,7 +206,7 @@ def aleppo(
             gt = dss.bolus_calculator_handler_params['gt'] if 'gt' in dss.bolus_calculator_handler_params else 120
             
             # compute IOB
-            iob = compute_iob(bolus)
+            iob = compute_iob(bolus[:time_index])
             
             # get arrow
             arrow = get_arrow((glucose[time_index] - glucose[time_index - 15]) / 15)
@@ -411,7 +411,7 @@ def drCORRECT(
                 
                 if dr_vec[-1] > dr_threshold:
                     # compute iob
-                    iob = compute_iob(bolus)
+                    iob = compute_iob(bolus[:time_index])
                     
                     # get params
                     cf = dss.bolus_calculator_handler_params['cf'] if 'cf' in dss.bolus_calculator_handler_params else 40
