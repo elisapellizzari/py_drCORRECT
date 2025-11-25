@@ -26,7 +26,7 @@ def compare_corrective_strategies(rbg: object, data: pd.DataFrame, subject_info:
         results: dict, containing replay results for each corrective strategy"""
     
     data_no_cib = data.copy()
-    B_idx = np.where(data_no_cib['bolus_label'] == 'B')[0]
+    B_idx = np.where(data_no_cib['bolus_label'] == 'B')[0][0]
     C_idx = np.where(data_no_cib['bolus_label'] == 'C')[0]
     data_no_cib['bolus'][C_idx[C_idx > B_idx]] = 0  # remove correction boluses after breakfast from original data
     data_no_cib['bolus_label'][C_idx[C_idx > B_idx]] = ''
