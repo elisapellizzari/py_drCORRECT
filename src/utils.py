@@ -38,10 +38,15 @@ def load_subject_info(name: str) -> dict:
     data_path = os.path.join("data", f"Tidepool_{name}.csv")
     df = pd.read_csv(data_path)
     
-    cf = df.bolus_cf.dropna().mean() if not np.isnan(cf) else 40
-    gt = df.bolus_bg_target.dropna().mean() if not np.isnan(gt) else 120
-    cr = df.bolus_cr.dropna().mean() if not np.isnan(cr) else 12
-    
+    cf_mean = df.bolus_cf.dropna().mean()
+    cf = 40 if np.isnan(cf_mean) else cf_mean
+
+    gt_mean = df.bolus_bg_target.dropna().mean()
+    gt = 120 if np.isnan(gt_mean) else gt_mean
+
+    cr_mean = df.bolus_cr.dropna().mean()
+    cr = 12 if np.isnan(cr_mean) else cr_mean
+
     bw = 70  # kg, assumed value
     
     u2ss = df.basal.mean() * 1000 / bw  # mU/kg/min
