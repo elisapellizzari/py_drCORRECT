@@ -52,4 +52,4 @@ def main(twin: bool = False, twinning_method: str = 'map', do_plot: bool = False
     
 
 if __name__ == "__main__":
-    main(twin=False, do_plot=True)
+    main(twin=False, twinning_method='mcmc', do_plot=True)
