@@ -48,7 +48,7 @@ def main(twin: bool = False, twinning_method: str = 'map', do_plot: bool = False
     save_comparison(results, os.path.join(save_folder, "results", "comparison_results"), trace_name)
     
     if do_plot:
-        plot_comparison(results, plot_folder, trace_name)
+        plot_comparison(results, plot_folder, trace_name, twinning_method)
     
 
 if __name__ == "__main__":

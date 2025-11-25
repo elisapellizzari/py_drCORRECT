@@ -166,3 +166,4 @@ def plot_comparison(results: dict, output_folder: str, trace_name: str, twinning
 
     save_name = f"cib_comparison_plot_{trace_name}_{twinning_method}"
     plt.savefig(os.path.join(output_folder, f"{save_name}.png"))
+    plt.close()
