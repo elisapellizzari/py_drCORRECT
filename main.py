@@ -45,7 +45,7 @@ def main(twin: bool = False, twinning_method: str = 'map', do_plot: bool = False
     
     # 5. Compare corrective strategies
     results = compare_corrective_strategies(rbg, original_data, subject_info, t_pers, twinning_method, save_name, trace_name)
-    save_comparison(results, os.path.join(save_folder, "results", "comparison_results"), trace_name)
+    save_comparison(results, os.path.join(save_folder, "results", "comparison_results"), trace_name, twinning_method)
     
     if do_plot:
         plot_comparison(results, plot_folder, trace_name, twinning_method)

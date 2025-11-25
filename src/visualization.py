@@ -86,7 +86,7 @@ def plot_twinned_data(rbg: object, twinning_method: str, original_data: pd.DataF
     plt.close('all')
     
 
-def plot_comparison(results: dict, output_folder: str, trace_name: str, twinning_method: str='map') -> None:
+def plot_comparison(results: dict, output_folder: str, trace_name: str, twinning_method: str) -> None:
     
     fig, axs = plt.subplots(4, 1, figsize=(14, 10), sharex=True,
                 gridspec_kw={'height_ratios': [5, 1, 1, 1]})

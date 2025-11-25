@@ -54,7 +54,7 @@ def load_subject_info(name: str) -> dict:
     return {'cf': cf, 'gt': gt, 'cr': cr, 'bw': bw, 'u2ss': u2ss}
 
 
-def retrieve_t_pers(save_name: str, subject_info: dict, save_folder: str, twinning_method: str = 'map') -> float:
+def retrieve_t_pers(save_name: str, subject_info: dict, save_folder: str, twinning_method: str) -> float:
     """
     Retrieve personalized parameter t_pers for drCORRECT algorithm from saved digital twin.
     Args:
@@ -141,7 +141,7 @@ def replaybg_backward_euler_matlab_implementation(xkm1: np.ndarray, INS: float, 
     return xk
 
 
-def save_comparison(results: dict, save_folder: str, trace_name: str) -> pd.DataFrame:
+def save_comparison(results: dict, save_folder: str, trace_name: str, twinning_method: str) -> pd.DataFrame:
     """
     Save comparison results to CSV file.
     Args:
@@ -171,6 +171,6 @@ def save_comparison(results: dict, save_folder: str, trace_name: str) -> pd.Data
         df.at['STD of Glucose ROC (mg/dl/min)', key] = std_glucose_roc(df_res)
     
     os.makedirs(save_folder, exist_ok=True)
-    df.to_csv(os.path.join(save_folder, f"comparison_results_{trace_name}.csv"))
+    df.to_csv(os.path.join(save_folder, f"comparison_results_{trace_name}_{twinning_method}.csv"))
     
     return df
