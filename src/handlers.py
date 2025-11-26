@@ -373,6 +373,7 @@ def drCORRECT(
     # get last mealtime and its label
     last_mealtime = get_last_mealtime(meal_announcement, meal_type, time_index) 
     if last_mealtime != dss.correction_boluses_handler_params.get('previous_mealtime', -1):
+        # reset when a new main meal occurs
         dss.correction_boluses_handler_params['previous_mealtime'] = last_mealtime
         dss.correction_boluses_handler_params['first_bolus_after_meal'] = True
         
@@ -392,40 +393,37 @@ def drCORRECT(
     # if there has been a main meal, trigger the algorithm
     if last_mealtime > 0:
         
-        # get last mealtime bolus
+        # get last mealtime bolus (if no bolus, consider when meal was announced)
         bolus_indices = np.where(bolus[:time_index] > 0)[0]
 
         if last_mealtime == -1 or len(bolus_indices) == 0:
-            last_mealbolustime = -1
+            last_mealbolustime = last_mealtime
         else:
             nearby_boluses = bolus_indices[np.abs(bolus_indices - last_mealtime) <= 4]
-            last_mealbolustime = nearby_boluses[-1] if len(nearby_boluses) > 0 else -1
-        
-        # if there has been a bolus for the last meal
-        if last_mealbolustime > -1:
+            last_mealbolustime = nearby_boluses[-1] if len(nearby_boluses) > 0 else last_mealtime
             
-            if time_index - last_mealbolustime > t_pers and not np.any(bolus[(time_index - int(t_pers)):time_index]):
-                # compute dr
-                dr_vec = dynamic_risk(pd.DataFrame({'t': pd.date_range(start=pd.Timestamp.today().normalize(),
-                               periods=len(glucose[:time_index]), freq='5min'), 'glucose': glucose[:time_index]}))
+        if time_index - last_mealbolustime > t_pers and not np.any(bolus[(time_index - int(t_pers)):time_index]):
+            # compute dr
+            dr_vec = dynamic_risk(pd.DataFrame({'t': pd.date_range(start=pd.Timestamp.today().normalize(),
+                            periods=len(glucose[:time_index]), freq='5min'), 'glucose': glucose[:time_index]}))
+            
+            if dr_vec[-1] > dr_threshold:
+                # compute iob
+                iob = compute_iob(bolus[:time_index])
                 
-                if dr_vec[-1] > dr_threshold:
-                    # compute iob
-                    iob = compute_iob(bolus[:time_index])
+                # get params
+                cf = dss.bolus_calculator_handler_params.get('cf', 40)
+                gt = dss.bolus_calculator_handler_params.get('gt', 120)
+                
+                if first_bolus_after_meal:
+                    # ...give a bolus
+                    cb = np.max([0, (glucose[time_index] - gt) / cf - iob])
+                    dss.correction_boluses_handler_params['first_bolus_after_meal'] = False
                     
-                    # get params
-                    cf = dss.bolus_calculator_handler_params['cf'] if 'cf' in dss.bolus_calculator_handler_params else 40
-                    gt = dss.bolus_calculator_handler_params['gt'] if 'gt' in dss.bolus_calculator_handler_params else 120
-                    
-                    if first_bolus_after_meal:
+                else:
+                    if np.diff(dr_vec)[-1] > 0:
                         # ...give a bolus
                         cb = np.max([0, (glucose[time_index] - gt) / cf - iob])
-                        dss.correction_boluses_handler_params['first_bolus_after_meal'] = False
-                        
-                    else:
-                        if np.diff(dr_vec)[-1] > 0:
-                            # ...give a bolus
-                            cb = np.max([0, (glucose[time_index] - gt) / cf - iob])
     
     return cb, dss
 
