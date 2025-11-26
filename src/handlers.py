@@ -189,104 +189,101 @@ def aleppo(
     # if there has been a meal, trigger the algorithm
     if last_mealtime > 0:
         
-        # get last mealtime bolus
+        # get last mealtime bolus (if no bolus, consider when meal was announced)
         bolus_indices = np.where(bolus[:time_index] > 0)[0]
 
         if last_mealtime == -1 or len(bolus_indices) == 0:
-            last_mealbolustime = -1
+            last_mealbolustime = last_mealtime
         else:
             nearby_boluses = bolus_indices[np.abs(bolus_indices - last_mealtime) <= 4]
-            last_mealbolustime = nearby_boluses[-1] if len(nearby_boluses) > 0 else -1
+            last_mealbolustime = nearby_boluses[-1] if len(nearby_boluses) > 0 else last_mealtime
+            
+        # get params
+        cf = dss.bolus_calculator_handler_params.get('cf', 40)
+        gt = dss.bolus_calculator_handler_params.get('gt', 120)
         
-        # if there has been a bolus for the last meal
-        if last_mealbolustime > -1:
-            
-            # get params
-            cf = dss.bolus_calculator_handler_params['cf'] if 'cf' in dss.bolus_calculator_handler_params else 40
-            gt = dss.bolus_calculator_handler_params['gt'] if 'gt' in dss.bolus_calculator_handler_params else 120
-            
-            # compute IOB
-            iob = compute_iob(bolus[:time_index])
-            
-            # get arrow
-            arrow = get_arrow((glucose[time_index] - glucose[time_index - 15]) / 15)
-            
-            if time_index - last_mealbolustime >= 2*60 and time_index - last_mealbolustime <= 4*60:
-                # REPLACE-BG instuctions
-                if check_after_1h and arrow > 2 and not np.any(bolus[(time_index - 1*60):time_index]):
-                    # ...give a bolus
-                    cb = np.max([0, (glucose[time_index] - gt) / cf - iob])
-                    dss.bolus_calculator_handler_params['check_after_1h'] = False
-                
-                if  glucose[time_index] > 250 and arrow > 2 and not np.any(bolus[(time_index - 2*60):time_index]):
-                    # ...give a bolus
-                    cb = np.max([0, (glucose[time_index] - gt) / cf - iob])
-                    dss.bolus_calculator_handler_params['check_after_1h'] = True
-                    
-                elif glucose[time_index] > 150 and arrow > 1 and not np.any(bolus[(time_index - 2*60):time_index]):
-                    # ...give a bolus
-                    cb = np.max([0, (glucose[time_index] - gt) / cf - iob])
-                
-            elif time_index - last_mealbolustime > 4*60 and not np.any(bolus[(time_index - 2*60):time_index]):
-                # get Aleppo's correction
-                correction_trend = 0
-                if arrow == -1:
-                    if cf < 25:
-                        correction_trend = -2.5
-                    elif cf < 50:
-                        correction_trend = -1.5
-                    elif cf < 75:
-                        correction_trend = -1
-                    else:
-                        correction_trend = -0.5
-                elif arrow == -2:
-                    if cf < 25:
-                        correction_trend = -3.5
-                    elif cf < 50:
-                        correction_trend = -2.5
-                    elif cf < 75:
-                        correction_trend = -1.5
-                    else:
-                        correction_trend = -1
-                elif arrow == -3:
-                    if cf < 25:
-                        correction_trend = -4.5
-                    elif cf < 50:
-                        correction_trend = -3.5
-                    elif cf < 75:
-                        correction_trend = -2.5
-                    else:
-                        correction_trend = -1.5
-                elif arrow == 1:
-                    if cf < 25:
-                        correction_trend = +2.5
-                    elif cf < 50:
-                        correction_trend = +1.5
-                    elif cf < 75:
-                        correction_trend = +1
-                    else:
-                        correction_trend = +0.5
-                elif arrow == 2:
-                    if cf < 25:
-                        correction_trend = +3.5
-                    elif cf < 50:
-                        correction_trend = +2.5
-                    elif cf < 75:
-                        correction_trend = +1.5
-                    else:
-                        correction_trend = +1
-                elif arrow == 3:
-                    if cf < 25:
-                        correction_trend = +4.5
-                    elif cf < 50:
-                        correction_trend = +3.5
-                    elif cf < 75:
-                        correction_trend = +2.5
-                    else:
-                        correction_trend = +1.5
-                        
+        # compute IOB
+        iob = compute_iob(bolus[:time_index])
+        
+        # get arrow
+        arrow = get_arrow((glucose[time_index] - glucose[time_index - 15]) / 15)
+        
+        if time_index - last_mealbolustime >= 2*60 and time_index - last_mealbolustime <= 4*60:
+            # REPLACE-BG instuctions
+            if check_after_1h and arrow > 2 and not np.any(bolus[(time_index - 1*60):time_index]):
                 # ...give a bolus
-                cb = np.max([0, (glucose[time_index] - gt) / cf - iob + correction_trend])
+                cb = np.max([0, (glucose[time_index] - gt) / cf - iob])
+                dss.bolus_calculator_handler_params['check_after_1h'] = False
+            
+            if  glucose[time_index] > 250 and arrow > 2 and not np.any(bolus[(time_index - 2*60):time_index]):
+                # ...give a bolus
+                cb = np.max([0, (glucose[time_index] - gt) / cf - iob])
+                dss.bolus_calculator_handler_params['check_after_1h'] = True
+                
+            elif glucose[time_index] > 150 and arrow > 1 and not np.any(bolus[(time_index - 2*60):time_index]):
+                # ...give a bolus
+                cb = np.max([0, (glucose[time_index] - gt) / cf - iob])
+            
+        elif time_index - last_mealbolustime > 4*60 and not np.any(bolus[(time_index - 2*60):time_index]):
+            # get Aleppo's correction
+            correction_trend = 0
+            if arrow == -1:
+                if cf < 25:
+                    correction_trend = -2.5
+                elif cf < 50:
+                    correction_trend = -1.5
+                elif cf < 75:
+                    correction_trend = -1
+                else:
+                    correction_trend = -0.5
+            elif arrow == -2:
+                if cf < 25:
+                    correction_trend = -3.5
+                elif cf < 50:
+                    correction_trend = -2.5
+                elif cf < 75:
+                    correction_trend = -1.5
+                else:
+                    correction_trend = -1
+            elif arrow == -3:
+                if cf < 25:
+                    correction_trend = -4.5
+                elif cf < 50:
+                    correction_trend = -3.5
+                elif cf < 75:
+                    correction_trend = -2.5
+                else:
+                    correction_trend = -1.5
+            elif arrow == 1:
+                if cf < 25:
+                    correction_trend = +2.5
+                elif cf < 50:
+                    correction_trend = +1.5
+                elif cf < 75:
+                    correction_trend = +1
+                else:
+                    correction_trend = +0.5
+            elif arrow == 2:
+                if cf < 25:
+                    correction_trend = +3.5
+                elif cf < 50:
+                    correction_trend = +2.5
+                elif cf < 75:
+                    correction_trend = +1.5
+                else:
+                    correction_trend = +1
+            elif arrow == 3:
+                if cf < 25:
+                    correction_trend = +4.5
+                elif cf < 50:
+                    correction_trend = +3.5
+                elif cf < 75:
+                    correction_trend = +2.5
+                else:
+                    correction_trend = +1.5
+                    
+            # ...give a bolus
+            cb = np.max([0, (glucose[time_index] - gt) / cf - iob + correction_trend])
                 
     return cb, dss
    
