@@ -31,7 +31,7 @@ def main(twin: bool = False, twinning_method: str = 'map', do_plot: bool = False
         blueprint="multi-meal", save_folder=save_folder,
         yts=5,
         seed=1,
-        verbose=False, plot_mode=False
+        verbose=True, plot_mode=False
     )
 
     # 3. Optional twinning
