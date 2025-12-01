@@ -1,6 +1,7 @@
 # drCORRECT: a proactive strategy to manage postprandial glycemia in type 1 diabetes
-
+<p align="center">
 <img src="drCORRECT_logo.png" height="350">
+</p>
 
 **drCORRECT** is an innovative, open-source Python implementation of a novel algorithm designed to **preventively administer corrective insulin boluses** after meals, offering a significant step forward in Type 1 Diabetes (T1D) management.
 
