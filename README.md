@@ -99,7 +99,7 @@ python main.py
 
 If you find this work valuable, please consider citing our original publication:
 
-Pellizzari E. et al., [*drCORRECT: An algorithm for the preventive administration of postprandial corrective insulin boluses in type 1 diabetes management*](https://doi.org/10.1177/19322968231123456), J Diabetes Sci Technol, 2023.
+Pellizzari E. et al., [*drCORRECT: An algorithm for the preventive administration of postprandial corrective insulin boluses in type 1 diabetes management*](https://journals.sagepub.com/doi/10.1177/19322968231221768), J Diabetes Sci Technol, 2023.
 
 
 ## Contribute & Support
